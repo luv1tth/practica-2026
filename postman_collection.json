@@ -1,0 +1,196 @@
+{
+  "info": {
+    "name": "Notes API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "health"
+          ]
+        },
+        "header": []
+      }
+    },
+    {
+      "name": "Список заметок",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/api/notes?page=1&per_page=10",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "notes"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "per_page",
+              "value": "10"
+            }
+          ]
+        },
+        "header": []
+      }
+    },
+    {
+      "name": "Поиск",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/api/notes?q=молоко",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "notes"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "молоко"
+            }
+          ]
+        },
+        "header": []
+      }
+    },
+    {
+      "name": "Получить заметку",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/api/notes/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "notes",
+            "1"
+          ]
+        },
+        "header": []
+      }
+    },
+    {
+      "name": "Создать заметку",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}/api/notes",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "notes"
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Купить молоко\",\n  \"content\": \"2 литра\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Заменить заметку (PUT)",
+      "request": {
+        "method": "PUT",
+        "url": {
+          "raw": "{{base_url}}/api/notes/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "notes",
+            "1"
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Новый заголовок\",\n  \"content\": \"Новый текст\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Изменить заметку (PATCH)",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "{{base_url}}/api/notes/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "notes",
+            "1"
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"content\": \"3 литра\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Удалить заметку",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{base_url}}/api/notes/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "notes",
+            "1"
+          ]
+        },
+        "header": []
+      }
+    }
+  ]
+}

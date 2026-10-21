@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Notes API — заметки</title>
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --text:#1d2330; --muted:#6b7280; --accent:#2563eb; --border:#e5e7eb; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#111418; --card:#1b1f26; --text:#e8eaed; --muted:#9aa0a6; --accent:#60a5fa; --border:#2d333b; } }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); }
+  main { max-width:720px; margin:0 auto; padding:24px 16px; }
+  h1 { margin:0 0 4px; font-size:1.6rem; }
+  p.sub { margin:0 0 20px; color:var(--muted); }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:12px; }
+  input, textarea { width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; background:transparent; color:inherit; font:inherit; margin-bottom:8px; }
+  textarea { min-height:70px; resize:vertical; }
+  button { padding:8px 14px; border:0; border-radius:8px; background:var(--accent); color:#fff; font:inherit; cursor:pointer; }
+  button.ghost { background:transparent; color:var(--muted); border:1px solid var(--border); }
+  .row { display:flex; gap:8px; align-items:center; }
+  .note h3 { margin:0 0 6px; font-size:1.05rem; }
+  .note p { margin:0 0 10px; white-space:pre-wrap; }
+  .meta { color:var(--muted); font-size:.85rem; }
+  .pager { display:flex; justify-content:space-between; align-items:center; margin-top:8px; }
+  a { color:var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Notes API</h1>
+  <p class="sub">Демо-интерфейс REST API сервиса заметок. Документация и примеры запросов — в README репозитория. Проверка: <a href="/health">/health</a>, <a href="/api/notes">/api/notes</a></p>
+
+  <div class="card">
+    <input id="title" placeholder="Заголовок" maxlength="200">
+    <textarea id="content" placeholder="Текст заметки"></textarea>
+    <button id="add">Добавить</button>
+  </div>
+
+  <div class="card row"><input id="q" placeholder="Поиск по заметкам" style="margin:0"></div>
+  <div id="list"></div>
+  <div class="pager"><button class="ghost" id="prev">← Назад</button><span class="meta" id="info"></span><button class="ghost" id="next">Вперёд →</button></div>
+</main>
+<script>
+const api = "/api/notes";
+let page = 1, perPage = 5, total = 0, timer;
+const $ = id => document.getElementById(id);
+
+function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+
+async function load() {
+  const q = encodeURIComponent($("q").value.trim());
+  const r = await fetch(`${api}?page=${page}&per_page=${perPage}&q=${q}`);
+  const data = await r.json();
+  total = data.total;
+  $("list").innerHTML = data.items.length ? data.items.map(n => `
+    <div class="card note">
+      <h3>${esc(n.title)}</h3>
+      ${n.content ? `<p>${esc(n.content)}</p>` : ""}
+      <div class="row"><span class="meta" style="flex:1">#${n.id} · ${n.updated_at}</span>
+      <button class="ghost" onclick="del(${n.id})">Удалить</button></div>
+    </div>`).join("") : `<div class="card meta">Заметок пока нет</div>`;
+  const pages = Math.max(1, Math.ceil(total / perPage));
+  $("info").textContent = `Страница ${page} из ${pages} · всего ${total}`;
+  $("prev").disabled = page <= 1; $("next").disabled = page >= pages;
+}
+
+$("add").onclick = async () => {
+  const r = await fetch(api, { method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title: $("title").value, content: $("content").value }) });
+  if (!r.ok) { alert((await r.json()).error); return; }
+  $("title").value = ""; $("content").value = ""; page = 1; load();
+};
+async function del(id) { await fetch(`${api}/${id}`, { method: "DELETE" }); load(); }
+$("prev").onclick = () => { page--; load(); };
+$("next").onclick = () => { page++; load(); };
+$("q").oninput = () => { clearTimeout(timer); timer = setTimeout(() => { page = 1; load(); }, 300); };
+load();
+</script>
+</body>
+</html>
