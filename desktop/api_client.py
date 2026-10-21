@@ -12,7 +12,7 @@ class ApiError(Exception):
 class NotesClient:
     def __init__(self, base_url, timeout=60):
         self.base_url = base_url.rstrip("/")
-        self.timeout = timeout  # бесплатный Render «просыпается» до минуты
+        self.timeout = timeout
 
     def _request(self, method, path, data=None):
         body = json.dumps(data).encode("utf-8") if data is not None else None

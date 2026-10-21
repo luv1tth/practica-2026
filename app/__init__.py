@@ -17,8 +17,7 @@ def create_app(test_config=None):
         app.config.update(test_config)
 
     os.makedirs(app.instance_path, exist_ok=True)
-    app.json.ensure_ascii = False  # чтобы кириллица в JSON отдавалась читаемо
-
+    app.json.ensure_ascii = False
     db.init_app(app)
     app.register_blueprint(bp)
 
@@ -38,7 +37,6 @@ def create_app(test_config=None):
     def method_not_allowed(_):
         return jsonify(error="Метод не поддерживается"), 405
 
-    # Простейший CORS: разрешаем запросы с любых доменов (для учебного фронтенда/Postman)
     @app.after_request
     def add_cors(resp):
         resp.headers["Access-Control-Allow-Origin"] = "*"

@@ -93,7 +93,7 @@ def update_note(note_id):
         return jsonify(error=err), 400
     if request.method == "PUT":
         data.setdefault("content", "")
-    sets = ", ".join(f"{k} = ?" for k in data)  # ключи берутся только из validate()
+    sets = ", ".join(f"{k} = ?" for k in data)
     db = get_db()
     db.execute(
         f"UPDATE notes SET {sets}, updated_at = datetime('now') WHERE id = ?",

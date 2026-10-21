@@ -10,12 +10,10 @@ from tkinter import messagebox, ttk
 
 try:
     from .api_client import ApiError, NotesClient
-except ImportError:  # запуск как скрипт или из .exe
+except ImportError:
     from api_client import ApiError, NotesClient
 
-# После деплоя впишите сюда адрес своего сервиса на Render, например
-# "https://notes-api-xxxx.onrender.com" — тогда программа будет подключаться к нему сразу.
-DEFAULT_URL = os.environ.get("NOTES_API_URL", "http://127.0.0.1:5000")
+DEFAULT_URL = os.environ.get("NOTES_API_URL", "https://notes-api-8iec.onrender.com")
 PER_PAGE = 20
 
 
@@ -27,16 +25,15 @@ class NotesApp(tk.Tk):
         self.minsize(640, 400)
 
         self.client = NotesClient(DEFAULT_URL)
-        self.notes = []        # заметки текущей страницы
-        self.current_id = None  # id открытой заметки (None — новая)
+        self.notes = []
+        self.current_id = None
         self.page = 1
         self.total = 0
         self._search_job = None
 
         self._build_ui()
-        self.refresh(quiet=True)  # при запуске ошибку показываем только в строке состояния
-
-    # ---------- интерфейс ----------
+        self.refresh(quiet=True)
+    #интерфейс
     def _build_ui(self):
         pad = {"padx": 6, "pady": 4}
 
@@ -94,7 +91,7 @@ class NotesApp(tk.Tk):
         self.bind("<Control-s>", lambda _: self.save_note())
         self.bind("<Control-n>", lambda _: self.new_note())
 
-    # ---------- фоновые запросы, чтобы окно не зависало ----------
+    #фоновые запросы, чтобы окно не зависало
     def run_async(self, func, on_success, message="Загрузка...", quiet=False):
         self.status.set(message)
         self.config(cursor="watch")
@@ -120,7 +117,7 @@ class NotesApp(tk.Tk):
         if not quiet:
             messagebox.showerror("Ошибка", message)
 
-    # ---------- действия ----------
+    #действия 
     def connect(self):
         self.client = NotesClient(self.url_var.get().strip())
         self.page = 1
