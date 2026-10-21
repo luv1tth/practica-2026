@@ -13,7 +13,7 @@ try:
 except ImportError:
     from api_client import ApiError, NotesClient
 
-DEFAULT_URL = os.environ.get("NOTES_API_URL", "https://notes-api-8iec.onrender.com")
+DEFAULT_URL = os.environ.get("NOTES_API_URL", "https://notes-api-ixrp.onrender.com")
 PER_PAGE = 20
 
 
